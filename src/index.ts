@@ -8,6 +8,7 @@ import { readPhotoTakenTimeFromGoogleJson } from './helpers/read-photo-taken-tim
 import { updateExifMetadata } from './helpers/update-exif-metadata';
 import { updateFileModificationDate } from './helpers/update-file-modification-date';
 import { Directories } from './models/directories'
+import { join } from 'path';
 
 const { readdir, mkdir, copyFile } = fspromises;
 
@@ -118,6 +119,13 @@ class GooglePhotosExif extends Command {
 
       // Copy the file into output directory
       this.log(`Copying file ${i} of ${mediaFiles.length}: ${mediaFile.mediaFilePath} -> ${mediaFile.outputFileName}`);
+
+      // If album dir is not created, create it
+
+      if (!existsSync(mediaFile.albumPath)) {
+        await mkdir(mediaFile.albumPath);
+        this.log(`--- Creating directory: ${mediaFile.albumPath} ---`);
+      }
       await copyFile(mediaFile.mediaFilePath, mediaFile.outputFilePath);
 
       // Process the output file, setting the modified timestamp and/or EXIF metadata where necessary

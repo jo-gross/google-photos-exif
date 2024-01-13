@@ -1,5 +1,5 @@
 import { existsSync } from 'fs';
-import { basename, extname, resolve } from 'path';
+import { basename, extname, resolve, dirname, join } from 'path';
 import { CONFIG } from '../config';
 import { MediaFileInfo } from '../models/media-file-info';
 import { doesFileSupportExif } from './does-file-support-exif';
@@ -19,12 +19,16 @@ export async function findSupportedMediaFiles(inputDir: string, outputDir: strin
     const mediaFileExtension = extname(mediaFilePath);
     const supportsExif = doesFileSupportExif(mediaFilePath);
 
+    const albumPath = join(outputDir, basename(dirname(mediaFilePath)));
+
+
     const jsonFilePath = getCompanionJsonPathForMediaFile(mediaFilePath);
     const jsonFileName = jsonFilePath ? basename(jsonFilePath) : null;
     const jsonFileExists = jsonFilePath ? existsSync(jsonFilePath) : false;
 
     const outputFileName = generateUniqueOutputFileName(mediaFilePath, allUsedOutputFilesLowerCased);
-    const outputFilePath = resolve(outputDir, outputFileName);
+    const outputFilePath = resolve(albumPath, outputFileName);
+
 
     mediaFiles.push({
       mediaFilePath,
@@ -36,6 +40,7 @@ export async function findSupportedMediaFiles(inputDir: string, outputDir: strin
       jsonFileExists,
       outputFileName,
       outputFilePath,
+      albumPath,
     });
     allUsedOutputFilesLowerCased.push(outputFileName.toLowerCase());
   }
