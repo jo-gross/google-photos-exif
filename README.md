@@ -2,7 +2,7 @@
 
 A tool to populate missing EXIF metadata in Google Photos takeout, using Google's JSON metadata.
 
-This will populate both *time taken* and *geo location*.
+This will populate both time taken and geo location while keeping the original folder structure.
 
 ## Table of Contents
 
